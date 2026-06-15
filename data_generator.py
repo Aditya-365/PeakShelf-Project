@@ -159,7 +159,7 @@ df["loss_if_expired"] = (df["waste_if_unsold"] * df["cost_price"]).round(2)
 # ---------------------------------------------------------------------------
 # 6. Save
 # ---------------------------------------------------------------------------
-out_path = "data/freshmark_sales.csv"
+out_path = "C:\\Adi-Old\\Internship-hyd\\Code\\PeakShelf-Project\\sales.csv"
 df.to_csv(out_path, index=False)
  
 print(f"Generated {len(df)} rows across {df['product_name'].nunique()} products")
