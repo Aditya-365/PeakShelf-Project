@@ -33,6 +33,13 @@ PRODUCTS = [
     ("Bread",       45,   32,   3,    8),
     ("Paneer 200g", 90,   65,   4,    6),
     ("Spinach Bunch",30,   18,   2,    9),
+    ("White Bread",         45,   32,   3,   15),
+    ("Brown Bread",         55,   40,   4,    8),
+    ("Ladi Pav (6 pcs)",    20,   14,   3,   20),
+    ("Burger Buns (4 pcs)", 30,   22,   4,    6),
+    ("Onions 1kg",          35,   24,  15,   30),
+    ("Potatoes 1kg",        30,   20,  20,   35),
+    ("Eggs (1 Dozen)",      85,   68,  14,   20),
 ]
  
 N_DAYS = 180
