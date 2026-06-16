@@ -10,7 +10,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import LabelEncoder
 
-class FreshMarkOptimizer:
+class PeakShelfOptimizer:
     def __init__(self):
         self.baseline_model = RandomForestRegressor(n_estimators=100, random_state=42)
         self.uplift_model = RandomForestRegressor(n_estimators=100, random_state=42)
@@ -118,8 +118,8 @@ class FreshMarkOptimizer:
         return best_discount, best_profit, expected_sales_at_best
 
 if __name__ == "__main__":
-    optimizer = FreshMarkOptimizer()
-    df = optimizer.load_and_preprocess('data/freshmark_sales.csv')
+    optimizer = PeakShelfOptimizer()
+    df = optimizer.load_and_preprocess('sales.csv')
     optimizer.train_models(df)
     
     # Scenario: 20 packets of Milk left, 1 day to expiry. Cost 58, MRP 66.
