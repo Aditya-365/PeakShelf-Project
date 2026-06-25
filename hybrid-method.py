@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import lightgbm as lgb
 import pulp
+import joblib
+import os
 
 class HybridPricingOptimizer:
     def __init__(self):
@@ -38,7 +40,7 @@ class HybridPricingOptimizer:
             X_control, y_control,
             categorical_feature=self.categorical_features
         )
-        print("     Model 0 (Control - Base Demand) Trained")
+        print("    Model 0 (Control - Base Demand) Trained")
         
         # 3. Train Model 1 (Treatment)
         X_treatment = df_treatment[self.features_m1]
@@ -47,7 +49,28 @@ class HybridPricingOptimizer:
             X_treatment, y_treatment,
             categorical_feature=self.categorical_features
         )
-        print("     Model 1 (Treatment - Promoted Demand) Trained\n")
+        print("    Model 1 (Treatment - Promoted Demand) Trained\n")
+
+    def save_pipeline(self, folder_path="models"):
+        """Saves the trained T-Learner models to disk."""
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            
+        print("Saving trained LightGBM models to disk...")
+        joblib.dump(self.model_0, f"{folder_path}/model_0_control.joblib")
+        joblib.dump(self.model_1, f"{folder_path}/model_1_treatment.joblib")
+        print(f"Models saved successfully in '{folder_path}/' directory!\n")
+
+    def load_pipeline(self, folder_path="models"):
+        """Loads previously trained models from disk."""
+        print("Loading pre-trained LightGBM models...")
+        try:
+            self.model_0 = joblib.load(f"{folder_path}/model_0_control.joblib")
+            self.model_1 = joblib.load(f"{folder_path}/model_1_treatment.joblib")
+            print("Models loaded and ready for prediction!\n")
+        except FileNotFoundError:
+            print(f"Error: Model files not found in '{folder_path}/'. You need to train them first.\n")
+            raise
 
     def predict_causal_demand(self, product, mrp, stock, expiry, is_weekend, avg_7d, discount):
         """Calculates expected demand using the T-Learner logic."""
@@ -78,7 +101,7 @@ class HybridPricingOptimizer:
         Uses PuLP to find the globally optimal discount strategy across the whole store,
         respecting business constraints.
         """
-        print("⚖️ Running PuLP Operations Research Solver...")
+        print("Running PuLP Operations Research Solver...")
         allowed_discounts = [0, 5, 10, 20, 30, 40]
         
         # 1. Pre-compute the ML predictions for all combinations
@@ -166,10 +189,21 @@ class HybridPricingOptimizer:
 
 
 if __name__ == "__main__":
-    # 1. Train the system
     optimizer = HybridPricingOptimizer()
-    df = optimizer.load_and_preprocess('data/freshmark_sales.csv')
-    optimizer.train_causal_t_learner(df)
+    
+    # 1. SMART LOADING OR TRAINING
+    # Check if models already exist in the "models" folder
+    if os.path.exists("models/model_0_control.joblib") and os.path.exists("models/model_1_treatment.joblib"):
+        optimizer.load_pipeline()
+    else:
+        print("First run detected. Initiating training sequence...\n")
+        try:
+            df = optimizer.load_and_preprocess('data/freshmark_sales.csv')
+            optimizer.train_causal_t_learner(df)
+            optimizer.save_pipeline()
+        except FileNotFoundError:
+            print("Error: 'data/freshmark_sales.csv' not found. Please run your data generator script first.")
+            exit()
     
     # 2. End-of-Day Store Optimization Scenario
     # Let's say it's evening, and the shopkeeper has these 3 batches of items expiring tomorrow
