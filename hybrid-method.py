@@ -139,7 +139,7 @@ class HybridPricingOptimizer:
         Uses the T-Learner logic:
           mu_0 = model_0.predict(x)          — baseline demand
           mu_1 = model_1.predict(x, discount) — demand under discount
-          tau  = mu_1 − mu_0                 — causal uplift
+          tau  = mu_1 - mu_0                 — causal uplift
 
         If discount == 0, uplift is 0 by definition.
         """
@@ -320,7 +320,7 @@ class HybridPricingOptimizer:
                     'Discount (%)':         r['discount'],
                     'Est. Sales (units)':   round(r['sales'], 1),
                     'Est. Waste (units)':   round(r['waste'], 1),
-                    'Projected Profit (₹)': round(r['profit'], 2),
+                    'Projected Profit': round(r['profit'], 2),
                 })
                 total_profit_out += r['profit']
                 total_waste_out  += r['waste']
@@ -401,6 +401,6 @@ if __name__ == "__main__":
     print("=" * 65)
     print(plan.to_string(index=False))
     print("-" * 65)
-    print(f"  Total Projected Profit : ₹{total_profit:.2f}")
+    print(f"  Total Projected Profit : {total_profit:.2f}")
     print(f"  Total Projected Waste  : {total_waste:.1f} units")
     print("=" * 65)
