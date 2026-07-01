@@ -90,7 +90,7 @@ class HybridPricingOptimizer:
             df_control['units_sold_today'],
             categorical_feature=self.categorical_features
         )
-        print("    Model 0 (Control – Base Demand) trained")
+        print("    Model 0 (Control - Base Demand) trained")
 
         # Model 1 — demand under discount
         self.model_1.fit(
